@@ -1,9 +1,11 @@
 package com.bespinglobal.dcos.ic.api.service;
 
+import com.bespinglobal.dcos.ic.ICApplication;
 import com.bespinglobal.dcos.ic.api.dto.PersonDto;
 import com.bespinglobal.dcos.ic.api.exception.NotFoundException;
 import com.bespinglobal.dcos.ic.api.repositories.basic.domain.Person;
 import com.bespinglobal.dcos.ic.api.repositories.basic.repository.PersonRepository;
+import com.bespinglobal.dcos.ic.config.DataSourceBasicConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,14 +14,15 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * Project : Information-Collector
@@ -29,7 +32,9 @@ import static org.hamcrest.Matchers.is;
  * *** 저작권 주의 ***
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = {
+        ICApplication.class,
+        DataSourceBasicConfig.class})
 public class PersonServiceTest {
 
     @Rule

@@ -1,4 +1,4 @@
-package com.bespinglobal.dcos.ic.api.repositories.cassandra.repository;
+package com.bespinglobal.dcos.ic.api.repositories.extra.repository;
 
 import com.bespinglobal.dcos.ic.api.dto.EmployeeDto;
 import com.bespinglobal.dcos.ic.api.repositories.extra.domain.Employee;
