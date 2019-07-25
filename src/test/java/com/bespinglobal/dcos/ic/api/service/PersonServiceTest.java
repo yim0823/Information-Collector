@@ -2,7 +2,7 @@ package com.bespinglobal.dcos.ic.api.service;
 
 import com.bespinglobal.dcos.ic.ICApplication;
 import com.bespinglobal.dcos.ic.api.dto.PersonDto;
-import com.bespinglobal.dcos.ic.api.exception.NotFoundException;
+import com.bespinglobal.dcos.ic.api.exception.ApplicationException;
 import com.bespinglobal.dcos.ic.api.repositories.basic.domain.Person;
 import com.bespinglobal.dcos.ic.api.repositories.basic.repository.PersonRepository;
 import com.bespinglobal.dcos.ic.config.DataSourceBasicConfig;
@@ -14,7 +14,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -108,8 +107,8 @@ public class PersonServiceTest {
     public void a3_findById_not_found() {
 
         // expect
-        thrown.expect(NotFoundException.class);
-        thrown.expectMessage("리소스를 찾지 못했습니다.");
+        thrown.expect(ApplicationException.class);
+        thrown.expectMessage("[Not exist] There are no Person with the ID");
 
         // when
         personService.findById(0L);
@@ -151,8 +150,8 @@ public class PersonServiceTest {
     public void a6_delete_not_found() {
 
         //expect
-        thrown.expect(NotFoundException.class);
-        thrown.expectMessage("리소스를 찾지 못했습니다.");
+        thrown.expect(ApplicationException.class);
+        thrown.expectMessage("[Not exist] There are no Person with the ID");
 
         //when
         personService.delete(0L);
