@@ -16,8 +16,10 @@ import javax.validation.Valid;
  * *** 저작권 주의 ***
  */
 @RestController
-@RequestMapping("persons")
+@RequestMapping(value = PersonController.PATH)
 public class PersonController {
+
+    static final String PATH = "/rest/persons";
 
     private ServiceComponent service;
 
