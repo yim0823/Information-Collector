@@ -1,9 +1,10 @@
 package com.bespinglobal.dcos.ic.api.service;
 
 import com.bespinglobal.dcos.ic.api.dto.PersonDto;
-import com.bespinglobal.dcos.ic.api.exception.NotFoundException;
+import com.bespinglobal.dcos.ic.api.exception.ApplicationException;
 import com.bespinglobal.dcos.ic.api.repositories.basic.domain.Person;
 import com.bespinglobal.dcos.ic.api.repositories.basic.repository.PersonRepository;
+import com.bespinglobal.dcos.ic.utils.RtCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,8 @@ public class PersonService {
     public PersonDto.Response findById(Long id) {
         return personRepository.findById(id)
                 .map(PersonDto.Response::of)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() ->
+                        new ApplicationException(RtCode.RT_NOT_EXIST, "There are no Person with the ID : " + id));
     }
 
     public PersonDto.Response add(PersonDto.Create create) {
@@ -51,7 +53,8 @@ public class PersonService {
     public void delete(Long id) {
 
         Person person = personRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() ->
+                        new ApplicationException(RtCode.RT_NOT_EXIST, "There are no Person with the ID : " + id));
 
         personRepository.delete(person);
     }
@@ -61,7 +64,8 @@ public class PersonService {
 
         Person updated = personRepository.findById(id)
                 .map(update::apply)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() ->
+                        new ApplicationException(RtCode.RT_NOT_EXIST, "There are no Person with the ID : " + id));
 
         return PersonDto.Response.of(updated);
     }

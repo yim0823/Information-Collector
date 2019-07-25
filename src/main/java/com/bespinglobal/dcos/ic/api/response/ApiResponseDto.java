@@ -1,5 +1,7 @@
 package com.bespinglobal.dcos.ic.api.response;
 
+import com.bespinglobal.dcos.ic.api.exception.ApplicationException;
+import com.bespinglobal.dcos.ic.utils.RtCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,51 +18,47 @@ import lombok.ToString;
 @Getter
 public class ApiResponseDto<T> {
 
-    public static final ApiResponseDto<String> DEFAULT_UNAUTHORIZED = new ApiResponseDto<>(ApiResponseCode.OK);
-    public static final ApiResponseDto<String> DEFAULT_OK = new ApiResponseDto<>(ApiResponseCode.OK);
+    public static final ApiResponseDto<String> DEFAULT_UNAUTHORIZED = new ApiResponseDto<>(RtCode.RT_SUCCESS);
+    public static final ApiResponseDto<String> DEFAULT_OK = new ApiResponseDto<>(RtCode.RT_SUCCESS);
 
-    private ApiResponseCode code;
+    private RtCode code;
     private String message;
     private T data;
 
-    private ApiResponseDto(ApiResponseCode status) {
+    private ApiResponseDto(RtCode status) {
         this.bindStatus(status);
     }
 
-    private ApiResponseDto(ApiResponseCode status, T data) {
+    private ApiResponseDto(RtCode status, T data) {
         this.bindStatus(status);
         this.data = data;
     }
 
-    private ApiResponseDto(ApiResponseCode code, String message, T data) {
+    private ApiResponseDto(RtCode code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    private ApiResponseDto(ApiResponseCode code, ApiException e) {
+    private ApiResponseDto(RtCode code, ApplicationException e) {
         this.code = code;
         this.message = e.getMessage();
     }
 
-    private void bindStatus(ApiResponseCode status) {
+    private void bindStatus(RtCode status) {
         this.code = status;
-        this.message = status.getMessage();
+        this.message = status.getRtMessage();
     }
 
     public static <T> ApiResponseDto<T> createOK(T data) {
-        return new ApiResponseDto<>(ApiResponseCode.OK, data);
+        return new ApiResponseDto<>(RtCode.RT_SUCCESS, data);
     }
 
-    public static ApiResponseDto<String> createException(ApiException e) {
-        return new ApiResponseDto<>(e.getStatus(), e);
-    }
-
-    public static ApiResponseDto<String> createException(ApiResponseCode code, String message) {
+    public static ApiResponseDto<String> createException(RtCode code, String message) {
         return new ApiResponseDto<>(code, message, "");
     }
 
-    public static <T> ApiResponseDto<T> createException(ApiResponseCode code, T data) {
+    public static <T> ApiResponseDto<T> createException(RtCode code, T data) {
         return new ApiResponseDto<>(code, data);
     }
 }

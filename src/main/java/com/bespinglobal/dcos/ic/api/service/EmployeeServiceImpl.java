@@ -1,9 +1,10 @@
 package com.bespinglobal.dcos.ic.api.service;
 
 import com.bespinglobal.dcos.ic.api.dto.EmployeeDto;
-import com.bespinglobal.dcos.ic.api.exception.NotFoundException;
+import com.bespinglobal.dcos.ic.api.exception.ApplicationException;
 import com.bespinglobal.dcos.ic.api.repositories.extra.domain.Employee;
 import com.bespinglobal.dcos.ic.api.repositories.extra.repository.EmployeeRepository;
+import com.bespinglobal.dcos.ic.utils.RtCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto.Response findById(String id) {
         return employeeRepository.findById(id)
                 .map(EmployeeDto.Response::of)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() ->
+                        new ApplicationException(RtCode.RT_NOT_EXIST, "There are no Employees with the ID : " + id));
     }
 
     public EmployeeDto.Response add(EmployeeDto.Create create) {
@@ -54,7 +56,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void delete(String id) {
 
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() ->
+                        new ApplicationException(RtCode.RT_NOT_EXIST, "There are no Employees with the ID : " + id));
 
         employeeRepository.delete(employee);
     }
@@ -64,7 +67,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee updated = employeeRepository.findById(id)
                 .map(update::apply)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() ->
+                        new ApplicationException(RtCode.RT_NOT_EXIST, "There are no Employees with the ID : " + id));
 
         return EmployeeDto.Response.of(updated);
     }

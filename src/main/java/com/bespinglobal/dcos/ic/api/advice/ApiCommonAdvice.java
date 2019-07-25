@@ -1,9 +1,8 @@
 package com.bespinglobal.dcos.ic.api.advice;
 
-import com.bespinglobal.dcos.ic.api.exception.NotFoundException;
-import com.bespinglobal.dcos.ic.api.response.ApiException;
-import com.bespinglobal.dcos.ic.api.response.ApiResponseCode;
+import com.bespinglobal.dcos.ic.api.exception.ApplicationException;
 import com.bespinglobal.dcos.ic.api.response.ApiResponseDto;
+import com.bespinglobal.dcos.ic.utils.RtCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -12,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,62 +32,88 @@ public class ApiCommonAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiCommonAdvice.class);
 
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler
-    public ApiResponseDto<String> handleBaseException(ApiException e) {
-        return ApiResponseDto.createException(e);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    public ApiResponseDto<String> handleBaseException(Exception e) {
+        return ApiResponseDto.createException(RtCode.RT_INTERNAL_ERROR, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ApiResponseDto<String> handleBaseException(MissingPathVariableException e) {
+        ApiResponseDto<String> exception = ApiResponseDto.createException(RtCode.RT_MISSING_PATH_VARIABLE, e.getMessage());
+        logger.error("[{}] {}", RtCode.RT_MISSING_PATH_VARIABLE.getRtCode(), exception);
+
+        return exception;
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler({ConstraintViolationException.class})
+    @ExceptionHandler({ ConstraintViolationException.class })
     public ApiResponseDto<String> handleBaseException(ConstraintViolationException e) {
-        return ApiResponseDto.createException(ApiResponseCode.BAD_PARAMETER, "파라미터가 잘못됐습니다.");
-    }
+        ApiResponseDto<String> exception = ApiResponseDto.createException(RtCode.RT_WRONG_PARAMETER, "Wrong parameters.");
+        logger.error("[{}] {}", RtCode.RT_WRONG_PARAMETER.getRtCode(), exception);
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({NotFoundException.class})
-    public ApiResponseDto<String> handleValidException(NotFoundException e) {
-        ApiResponseDto<String> exception = ApiResponseDto.createException(new ApiException(ApiResponseCode.NOT_FOUND, e.getMessage()));
-        logger.error("[{}] {}", ApiResponseCode.NOT_FOUND.getId(), exception);
         return exception;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ConversionFailedException.class})
+    @ExceptionHandler({ ApplicationException.class })
+    public ApiResponseDto<String> handleValidException(ApplicationException e) {
+        ApiResponseDto<String> exception = ApiResponseDto.createException(RtCode.RT_NOT_SUPPORT, e.getMessage());
+        logger.error("[{}] {}", RtCode.RT_NOT_SUPPORT.getRtCode(), exception);
+
+        return exception;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ ConversionFailedException.class })
     public ApiResponseDto<String> handleValidException(ConversionFailedException e) {
-        String errorMessage = String.format(" %s 요청 파라미터를 확인해주세요.", e.getTargetType().getType().getSimpleName());
-        ApiResponseDto<String> exception = ApiResponseDto.createException(new ApiException(ApiResponseCode.BAD_PARAMETER, errorMessage));
-        logger.error("[{}] {}", ApiResponseCode.BAD_PARAMETER.getId(), exception);
+        String errorMessage = String.format(
+                " %s Conversion failed for Object of a request.",
+                e.getTargetType().getType().getSimpleName());
+
+        ApiResponseDto<String> exception = ApiResponseDto.createException(RtCode.RT_WRONG_PARAMETER, errorMessage);
+        logger.error("[{}] {}", RtCode.RT_WRONG_PARAMETER.getRtCode(), exception);
+
         return exception;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler({ MethodArgumentNotValidException.class })
     public ApiResponseDto<String> handleValidException(MethodArgumentNotValidException e) {
 
         BindingResult result = e.getBindingResult();
+        String errorMessage = String.format(
+                " %s Validation failed for Object of a request.",
+                Objects.requireNonNull(result.getFieldError()).getField());
 
-        String errorMessage = String.format(" %s 요청 파라미터를 확인해주세요.", Objects.requireNonNull(result.getFieldError()).getField());
-        ApiResponseDto<String> exception = ApiResponseDto.createException(new ApiException(ApiResponseCode.BAD_PARAMETER, errorMessage));
-        logger.error("[{}] {}", ApiResponseCode.BAD_PARAMETER.getId(), exception);
+        ApiResponseDto<String> exception = ApiResponseDto.createException(RtCode.RT_VALIDATION_FAILURE, errorMessage);
+        logger.error("[{}] {}", RtCode.RT_VALIDATION_FAILURE.getRtCode(), exception);
+
         return exception;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({BindException.class})
+    @ExceptionHandler({ BindException.class })
     public ApiResponseDto<ErrorMessageCollection> handleValidException(BindException e) {
 
         ApiResponseDto<ErrorMessageCollection> exception = ApiResponseDto.createException(
-                ApiResponseCode.BAD_PARAMETER,
-                new ErrorMessageCollection(e.getBindingResult().getFieldErrors(), e.getBindingResult().getGlobalErrors()));
+                RtCode.RT_WRONG_PARAMETER,
+                new ErrorMessageCollection(
+                        e.getBindingResult().getFieldErrors(),
+                        e.getBindingResult().getGlobalErrors()));
+        logger.error("[{}] {}", RtCode.RT_BINDING_FAILURE.getRtCode(), exception);
 
-        logger.error("[{}] {}", ApiResponseCode.BAD_PARAMETER.getId(), exception);
         return exception;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({NumberFormatException.class})
+    @ExceptionHandler({ NumberFormatException.class })
     public ApiResponseDto<String> handleValidException(NumberFormatException e) {
-        return ApiResponseDto.createException(ApiResponseCode.BAD_PARAMETER, "파라미터가 잘못됐습니다.");
+        ApiResponseDto<String> exception = ApiResponseDto.createException(RtCode.RT_WRONG_PARAMETER, "Wrong parameters.");
+        logger.error("[{}] {}", RtCode.RT_WRONG_PARAMETER.getRtCode(), exception);
+
+        return exception;
     }
+
 }
