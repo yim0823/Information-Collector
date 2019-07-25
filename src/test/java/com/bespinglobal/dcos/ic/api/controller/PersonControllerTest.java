@@ -82,7 +82,7 @@ public class PersonControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc.perform(
-                get("/persons").accept(MediaType.APPLICATION_JSON)
+                get("/rest/persons").accept(MediaType.APPLICATION_JSON)
         );
 
         // then
@@ -121,7 +121,7 @@ public class PersonControllerTest {
 
         // when
         ResultActions resultActions = this.mockMvc.perform(
-                get("/persons/{id}", 1L)
+                get("/rest/persons/{id}", 1L)
                 .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -169,7 +169,7 @@ public class PersonControllerTest {
         create.setHobby("play football");
 
         ResultActions resultActions = this.mockMvc.perform(
-                post("/persons")
+                post("/rest/persons")
                 .content(objectMapper.writeValueAsString(create))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -207,7 +207,7 @@ public class PersonControllerTest {
 
         //when
         ResultActions resultActions = this.mockMvc.perform(
-                delete("/persons/{id}", 1L)
+                delete("/rest/persons/{id}", 1L)
                 .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -246,7 +246,7 @@ public class PersonControllerTest {
 
 
         ResultActions resultActions = this.mockMvc.perform(
-                put("/persons/{id}", 1L)
+                put("/rest/persons/{id}", 1L)
                 .content(objectMapper.writeValueAsString(update))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)

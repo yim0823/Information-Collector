@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
  * *** 저작권 주의 ***
  */
 @Component
-public class AssetDbCrawler implements DbCrawlerStrategy {
+public class AwsAssetDbCrawler implements DbCrawlerStrategy {
 
     @Override
     public String crawling() {
-        return "crawling asset data from the OpsNow's database";
+        return "crawling asset data on AWS from the OpsNow's database";
     }
 }

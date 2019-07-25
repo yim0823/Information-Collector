@@ -1,8 +1,9 @@
 package com.bespinglobal.dcos.ic.api.service.crawler;
 
 import com.bespinglobal.dcos.ic.api.component.AccountDbCrawler;
-import com.bespinglobal.dcos.ic.api.component.AssetDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.AwsAssetDbCrawler;
 import com.bespinglobal.dcos.ic.api.component.CollectorContext;
+import com.bespinglobal.dcos.ic.api.component.GcpAssetDbCrawler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +25,14 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest
 public class AssetServiceImplTest {
 
-    private CollectorContext assetDbCollector;
+    private CollectorContext awsAssetDbCollector;
+    private CollectorContext gcpAssetDbCollector;
     private CollectorContext accountDbCollector;
 
     @Before
     public void setUp() {
-        this.assetDbCollector = new CollectorContext(new AssetDbCrawler());
+        this.awsAssetDbCollector = new CollectorContext(new AwsAssetDbCrawler());
+        this.gcpAssetDbCollector = new CollectorContext(new GcpAssetDbCrawler());
         this.accountDbCollector = new CollectorContext(new AccountDbCrawler());
     }
 
@@ -37,15 +40,26 @@ public class AssetServiceImplTest {
     public void a1_conform_strategy_pattern() {
 
         // when
-        String result = assetDbCollector.crawling();
+        String result = awsAssetDbCollector.crawling();
 
         // then
         assertThat(result, is(notNullValue()));
-        assertThat(result, is("crawling asset data from the OpsNow's database"));
+        assertThat(result, is("crawling asset data on AWS from the OpsNow's database"));
     }
 
     @Test
-    public void a2_conform_strategy_pattern() {
+    public void a2_conform_strategty_pattern() {
+
+        // when
+        String result = gcpAssetDbCollector.crawling();
+
+        // then
+        assertThat(result, is(notNullValue()));
+        assertThat(result, is("crawling asset data on GCP from the OpsNow's database"));
+    }
+
+    @Test
+    public void a3_conform_strategy_pattern() {
 
         // when
         String result = accountDbCollector.crawling();
