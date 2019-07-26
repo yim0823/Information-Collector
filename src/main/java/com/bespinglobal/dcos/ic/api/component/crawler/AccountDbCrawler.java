@@ -1,8 +1,8 @@
-package com.bespinglobal.dcos.ic.api.component;
+package com.bespinglobal.dcos.ic.api.component.crawler;
 
 /**
  * Project : Information-Collector
- * Class : com.bespinglobal.dcos.ic.api.component.AccountDbCrawler
+ * Class : com.bespinglobal.dcos.ic.api.component.crawler.AccountDbCrawler
  * Version : 2019.07.25 v0.1
  * Created by taehyoung.yim on 2019-07-25.
  * *** 저작권 주의 ***

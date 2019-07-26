@@ -1,9 +1,9 @@
 package com.bespinglobal.dcos.ic.api.service.crawler;
 
-import com.bespinglobal.dcos.ic.api.component.AccountDbCrawler;
-import com.bespinglobal.dcos.ic.api.component.AwsAssetDbCrawler;
-import com.bespinglobal.dcos.ic.api.component.CollectorContext;
-import com.bespinglobal.dcos.ic.api.component.GcpAssetDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.crawler.AccountDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.crawler.CollectorContext;
+import com.bespinglobal.dcos.ic.api.component.crawler.AwsAssetDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.crawler.GcpAssetDbCrawler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,26 +20,26 @@ public class AssetServiceImpl implements AssetService {
 
     private static final Logger logger = LoggerFactory.getLogger(AssetServiceImpl.class);
 
-    private CollectorContext awsAssetDbCollector;
-    private CollectorContext gcpAssetDbCollector;
+    private CollectorContext awsCollector;
+    private CollectorContext gcpCollector;
     private CollectorContext accountDbCollector;
 
     public AssetServiceImpl() {
-        this.awsAssetDbCollector = new CollectorContext(new AwsAssetDbCrawler());
-        this.gcpAssetDbCollector = new CollectorContext(new GcpAssetDbCrawler());
+        this.awsCollector = new CollectorContext(new AwsAssetDbCrawler());
+        this.gcpCollector = new CollectorContext(new GcpAssetDbCrawler());
         this.accountDbCollector = new CollectorContext(new AccountDbCrawler());
     }
 
     @Override
-    public void crawlingAwsAssetDataByService() {
+    public void crawlingAwsDataByService() {
 
-        logger.info(awsAssetDbCollector.crawling());
+        logger.info(awsCollector.crawling());
     }
 
     @Override
     public void crawlingAwsAccountDataByService() {
 
-        logger.info(gcpAssetDbCollector.crawling());
+        logger.info(gcpCollector.crawling());
     }
 
 

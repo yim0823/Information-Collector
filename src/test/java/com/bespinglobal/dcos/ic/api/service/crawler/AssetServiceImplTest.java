@@ -1,9 +1,9 @@
 package com.bespinglobal.dcos.ic.api.service.crawler;
 
-import com.bespinglobal.dcos.ic.api.component.AccountDbCrawler;
-import com.bespinglobal.dcos.ic.api.component.AwsAssetDbCrawler;
-import com.bespinglobal.dcos.ic.api.component.CollectorContext;
-import com.bespinglobal.dcos.ic.api.component.GcpAssetDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.crawler.AccountDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.crawler.AwsAssetDbCrawler;
+import com.bespinglobal.dcos.ic.api.component.crawler.CollectorContext;
+import com.bespinglobal.dcos.ic.api.component.crawler.GcpAssetDbCrawler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,14 +25,14 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest
 public class AssetServiceImplTest {
 
-    private CollectorContext awsAssetDbCollector;
-    private CollectorContext gcpAssetDbCollector;
+    private CollectorContext awsDbCollector;
+    private CollectorContext gcpCollector;
     private CollectorContext accountDbCollector;
 
     @Before
     public void setUp() {
-        this.awsAssetDbCollector = new CollectorContext(new AwsAssetDbCrawler());
-        this.gcpAssetDbCollector = new CollectorContext(new GcpAssetDbCrawler());
+        this.awsDbCollector = new CollectorContext(new AwsAssetDbCrawler());
+        this.gcpCollector = new CollectorContext(new GcpAssetDbCrawler());
         this.accountDbCollector = new CollectorContext(new AccountDbCrawler());
     }
 
@@ -40,22 +40,20 @@ public class AssetServiceImplTest {
     public void a1_conform_strategy_pattern() {
 
         // when
-        String result = awsAssetDbCollector.crawling();
+        String result = awsDbCollector.crawling();
 
         // then
-        assertThat(result, is(notNullValue()));
-        assertThat(result, is("crawling asset data on AWS from the OpsNow's database"));
+        checkTheResult(result, "crawling asset data on AWS from the OpsNow's database");
     }
 
     @Test
     public void a2_conform_strategty_pattern() {
 
         // when
-        String result = gcpAssetDbCollector.crawling();
+        String result = gcpCollector.crawling();
 
         // then
-        assertThat(result, is(notNullValue()));
-        assertThat(result, is("crawling asset data on GCP from the OpsNow's database"));
+        checkTheResult(result, "crawling asset data on GCP from the OpsNow's database");
     }
 
     @Test
@@ -65,7 +63,12 @@ public class AssetServiceImplTest {
         String result = accountDbCollector.crawling();
 
         // then
+        checkTheResult(result, "crawling account data from the Portal's database");
+    }
+
+    private void checkTheResult(String result, String expected) {
+
         assertThat(result, is(notNullValue()));
-        assertThat(result, is("crawling account data from the Portal's database"));
+        assertThat(result, is(expected));
     }
 }

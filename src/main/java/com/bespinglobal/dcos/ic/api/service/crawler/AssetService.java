@@ -9,7 +9,7 @@ package com.bespinglobal.dcos.ic.api.service.crawler;
  */
 public interface AssetService {
 
-    void crawlingAwsAssetDataByService();
+    void crawlingAwsDataByService();
 
     void crawlingAwsAccountDataByService();
 

@@ -30,7 +30,7 @@ Java web application 으로 Cloud 제품별 Asset 정보와 서비스 계정을 
  - 구현: '데이터 수집'을 위해 'AWS Crawling, GCP Crawling' 으로 나눠지며, Azure Crawling, OpenStack Crawling 으로 추가, 변경될 수 있다.
  - Strategy Pattern
    - 클래스 다이어그램
-   ![Class Diagram](https://user-images.githubusercontent.com/3222837/61916572-08d17780-af84-11e9-9c55-8da6847f45fe.png)
+   ![Class Diagram](https://user-images.githubusercontent.com/3222837/61924456-e0a54100-afa2-11e9-9f21-d9635c53cfb6.png)
    
    - 시퀀스 다이어그램
    ![Sequence Diagram](https://user-images.githubusercontent.com/3222837/61916614-20106500-af84-11e9-9535-1c29df3e53f9.png)

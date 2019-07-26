@@ -1,12 +1,12 @@
-package com.bespinglobal.dcos.ic.api.component;
+package com.bespinglobal.dcos.ic.api.component.crawler;
 
 import org.springframework.stereotype.Component;
 
 /**
  * Project : Information-Collector
- * Class : com.bespinglobal.dcos.ic.api.component.GcpAssetDbCrawler
- * Version : 2019.07.25 v0.1
- * Created by taehyoung.yim on 2019-07-25.
+ * Class : com.bespinglobal.dcos.ic.api.component.crawler.GcpAssetDbCrawler
+ * Version : 2019.07.26 v0.1
+ * Created by taehyoung.yim on 2019-07-26.
  * *** 저작권 주의 ***
  */
 @Component
