@@ -25,22 +25,21 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest
 public class AssetServiceImplTest {
 
-    private CollectorContext awsDbCollector;
-    private CollectorContext gcpCollector;
-    private CollectorContext accountDbCollector;
+    private CollectorContext collectorService;
 
     @Before
     public void setUp() {
-        this.awsDbCollector = new CollectorContext(new AwsAssetDbCrawler());
-        this.gcpCollector = new CollectorContext(new GcpAssetDbCrawler());
-        this.accountDbCollector = new CollectorContext(new AccountDbCrawler());
+        this.collectorService = new CollectorContext();
     }
 
     @Test
     public void a1_conform_strategy_pattern() {
 
+        // given
+        collectorService.setDbCrawlerType(new AwsAssetDbCrawler());
+
         // when
-        String result = awsDbCollector.crawling();
+        String result = collectorService.crawling();
 
         // then
         checkTheResult(result, "crawling asset data on AWS from the OpsNow's database");
@@ -49,8 +48,11 @@ public class AssetServiceImplTest {
     @Test
     public void a2_conform_strategty_pattern() {
 
+        // given
+        collectorService.setDbCrawlerType(new GcpAssetDbCrawler());
+
         // when
-        String result = gcpCollector.crawling();
+        String result = collectorService.crawling();
 
         // then
         checkTheResult(result, "crawling asset data on GCP from the OpsNow's database");
@@ -59,8 +61,11 @@ public class AssetServiceImplTest {
     @Test
     public void a3_conform_strategy_pattern() {
 
+        // given
+        collectorService.setDbCrawlerType(new AccountDbCrawler());
+
         // when
-        String result = accountDbCollector.crawling();
+        String result = collectorService.crawling();
 
         // then
         checkTheResult(result, "crawling account data from the Portal's database");

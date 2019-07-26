@@ -9,13 +9,13 @@ package com.bespinglobal.dcos.ic.api.component.crawler;
  */
 public class CollectorContext {
 
-    private DbCrawlerStrategy dbCrawlerStrategy;
+    private DbCrawlerStrategy dbCrawlerType;
 
-    public CollectorContext(DbCrawlerStrategy dbCrawlerStrategy) {
-        this.dbCrawlerStrategy = dbCrawlerStrategy;
+    public void setDbCrawlerType(DbCrawlerStrategy dbCrawlerType) {
+        this.dbCrawlerType = dbCrawlerType;
     }
 
     public String crawling() {
-        return dbCrawlerStrategy.crawling();
+        return dbCrawlerType.crawling();
     }
 }
